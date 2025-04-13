@@ -3,13 +3,13 @@ const path = require('path');
 const { exec } = require('child_process');
 const ytSearch = require('yt-search');
 const fs = require('fs');
-const ytDlpPath = path.resolve(__dirname, 'yt-dlp');
-const ffmpegPath = path.resolve(__dirname, 'ffmpeg');
-const command = `${ytDlpPath} -x --ffmpeg-location "${ffmpegPath}" --audio-format mp3 --audio-quality 0 -o "${outputPath}" "${url}"`;
 
 const app = express();
 const port = process.env.PORT || 3000;
+
 const tempFolder = path.join(__dirname, 'tmp');
+const ytDlpPath = path.resolve(__dirname, 'bin/yt-dlp');
+const ffmpegPath = path.resolve(__dirname, 'bin/ffmpeg');
 
 // Ensure tmp directory exists
 if (!fs.existsSync(tempFolder)) {
@@ -20,7 +20,7 @@ if (!fs.existsSync(tempFolder)) {
 function downloadAudio(url, videoId) {
   return new Promise((resolve, reject) => {
     const outputPath = path.resolve(tempFolder, `${videoId}.mp3`);
-    const command = `yt-dlp -x --audio-format mp3 --audio-quality 0 -o "${outputPath}" "${url}"`;
+    const command = `${ytDlpPath} -x --ffmpeg-location "${ffmpegPath}" --audio-format mp3 --audio-quality 0 -o "${outputPath}" "${url}"`;
 
     exec(command, (error, stdout, stderr) => {
       console.log('[yt-dlp stdout]', stdout);
@@ -68,7 +68,6 @@ app.get('/download', async (req, res) => {
     }
 
     res.download(filePath, `${video.title}.mp3`);
-
   } catch (err) {
     console.error('[ERROR] Failed:', err);
     res.status(500).send('Internal server error.');
