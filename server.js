@@ -3,6 +3,9 @@ const path = require('path');
 const { exec } = require('child_process');
 const ytSearch = require('yt-search');
 const fs = require('fs');
+const ytDlpPath = path.resolve(__dirname, 'yt-dlp');
+const ffmpegPath = path.resolve(__dirname, 'ffmpeg');
+const command = `${ytDlpPath} -x --ffmpeg-location "${ffmpegPath}" --audio-format mp3 --audio-quality 0 -o "${outputPath}" "${url}"`;
 
 const app = express();
 const port = process.env.PORT || 3000;
